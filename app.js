@@ -1,7 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+const bookRoutes = require('./routes/bookRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const userRoutes = require('./routes/userRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
 
 dotenv.config();
 
@@ -9,21 +13,20 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
+app.use(authMiddleware);
 
-// Import Routes
-const bookRoutes = require('./routes/bookRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const userRoutes = require('./routes/userRoutes');
-
-// Use Routes
+// Routes
 app.use('/api/books', bookRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 
-// Connect to DB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("Database connected"))
-    .catch(err => console.log(err));
+// Connessione a MongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Porta su cui il server ascolta
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
