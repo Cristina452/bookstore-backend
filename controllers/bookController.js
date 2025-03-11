@@ -1,44 +1,43 @@
 const Book = require('../models/bookModel');
 
-// Get all books
-exports.getBooks = async (req, res) => {
-  try {
-    const books = await Book.find();
-    res.status(200).json(books);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// Get book by ISBN
-exports.getBookByISBN = async (req, res) => {
-  try {
-    const book = await Book.findOne({ isbn: req.params.isbn });
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+const getAllBooks = async (req, res) => {
+    try {
+        const books = await Book.find();
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error' });
     }
-    res.status(200).json(book);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
 
-// Get books by author
-exports.getBooksByAuthor = async (req, res) => {
-  try {
-    const books = await Book.find({ author: req.params.author });
-    res.status(200).json(books);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+const getBookByIsbn = async (req, res) => {
+    const { isbn } = req.params;
+    try {
+        const book = await Book.findOne({ isbn });
+        if (!book) return res.status(404).json({ message: 'Book not found' });
+        res.json(book);
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error' });
+    }
 };
 
-// Get books by title
-exports.getBooksByTitle = async (req, res) => {
-  try {
-    const books = await Book.find({ title: { $regex: req.params.title, $options: 'i' } });
-    res.status(200).json(books);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+const getBooksByAuthor = async (req, res) => {
+    const { author } = req.params;
+    try {
+        const books = await Book.find({ author });
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error' });
+    }
 };
+
+const getBooksByTitle = async (req, res) => {
+    const { title } = req.params;
+    try {
+        const books = await Book.find({ title });
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+module.exports = { getAllBooks, getBookByIsbn, getBooksByAuthor, getBooksByTitle };
