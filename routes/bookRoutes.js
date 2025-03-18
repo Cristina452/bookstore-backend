@@ -1,11 +1,14 @@
 const express = require('express');
-const { getAllBooks, getBookByIsbn, getBooksByAuthor, getBooksByTitle } = require('../controllers/bookController');
-
 const router = express.Router();
+const bookController = require('../controllers/bookController');
 
-router.get('/', getAllBooks);
-router.get('/:isbn', getBookByIsbn);
-router.get('/author/:author', getBooksByAuthor);
-router.get('/title/:title', getBooksByTitle);
+// Rotte per i libri
+router.get('/', bookController.getAllBooks);
+router.get('/:isbn', bookController.getBookByISBN);
+router.get('/author/:author', bookController.getBooksByAuthor);
+router.get('/title/:title', bookController.getBooksByTitle);
+router.post('/', bookController.createBook);
+router.put('/:id', bookController.updateBook);
+router.delete('/:id', bookController.deleteBook);
 
 module.exports = router;

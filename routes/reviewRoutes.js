@@ -1,9 +1,10 @@
 const express = require('express');
-const { addReview } = require('../controllers/reviewController');
-const { verifyToken } = require('../config/jwt');
-
 const router = express.Router();
+const reviewController = require('../controllers/reviewController');
 
-router.post('/', verifyToken, addReview);
+// Rotte per le recensioni
+router.post('/', reviewController.addReview);
+router.put('/:id', reviewController.updateReview);
+router.delete('/:id', reviewController.deleteReview);
 
 module.exports = router;

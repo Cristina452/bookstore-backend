@@ -1,20 +1,31 @@
-// Importa i moduli necessari
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
-// Importa il router delle rotte
+// Importa le rotte
+const bookRoutes = require('./routes/bookRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-// Crea un'applicazione Express
+// Carica le variabili d'ambiente
+dotenv.config();
+
+// Crea l'app Express
 const app = express();
 
-// Usa CORS e body-parser
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Usa il router delle rotte per la registrazione utente
-app.use('/api/users', userRoutes);  // Il prefisso '/api/users' è facoltativo
+// Connessione al DB
+const connectDB = require('./config/db');
+connectDB();
+
+// Usa le rotte
+app.use('/api/books', bookRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/users', userRoutes);
 
 // Avvia il server
 const PORT = process.env.PORT || 3000;

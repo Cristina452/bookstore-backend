@@ -1,19 +1,14 @@
 const jwt = require('jsonwebtoken');
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+const generateToken = (userId) => {
+    return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
-const verifyToken = (req, res, next) => {
-    const token = req.header('x-auth-token');
-    if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
-
+const verifyToken = (token) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded.id;
-        next();
-    } catch (err) {
-        res.status(401).json({ message: 'Token is not valid' });
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+        return null;
     }
 };
 

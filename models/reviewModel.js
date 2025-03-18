@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 
+// Schema per la recensione
 const reviewSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book', required: true },
-    text: { type: String, required: true },
-    rating: { type: Number, required: true }
+    bookId: { type: mongoose.Schema.Types.ObjectId, ref: 'Book', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String },
+    date: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+const Review = mongoose.model('Review', reviewSchema);
+
+module.exports = Review;

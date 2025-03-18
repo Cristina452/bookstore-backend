@@ -1,22 +1,35 @@
-// Importa eventuali moduli necessari, ad esempio il modello User
-// const User = require('../models/user');  // Se hai un modello User per il database
+const User = require('../models/userModel');
+const { generateToken } = require('../utils/jwt');
 
-// Funzione per la registrazione dell'utente
-exports.register = (req, res) => {
+// Registrazione di un nuovo utente
+exports.register = async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Logica per registrare un nuovo utente
-    // Esegui la registrazione dell'utente nel database, es.:
-    /*
     const newUser = new User({ username, email, password });
-    newUser.save()
-        .then(user => res.status(201).json({ message: 'User registered successfully', user }))
-        .catch(err => res.status(500).json({ message: 'Error registering user', error: err }));
-    */
 
-    // Per ora, simuliamo una risposta di successo
-    res.status(200).json({
-        message: 'User registered successfully',
-        user: { username, email }  // Puoi includere altre informazioni qui
-    });
+    try {
+        const user = await newUser.save();
+        const token = generateToken(user._id); // Genera il token
+        res.status(201).json({ message: 'User registered successfully', user, token });
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering user', error });
+    }
+};
+
+// Login dell'utente
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const token = generateToken(user._id); // Genera il token
+    res.status(200).json({ message: 'Login successful', token });
 };
